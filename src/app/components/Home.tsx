@@ -13,7 +13,7 @@ import { SafetySettings } from './SafetySettings';
 import { BlockedUsersList } from './BlockedUsersList';
 import { HelpCenter } from './HelpCenter';
 import { PanicExit, SafeScreen } from './PanicExit';
-import logoImage from "figma:asset/2adf89cd05eab827313c4a2ea4459c75b1ff962c.png";
+import logoImage from "../../imports/ChatGPT_Image_Apr_22,_2026,_12_46_44_AM.png";
 
 type Screen = 'home' | 'connect' | 'chat' | 'journal' | 'profile' | 'crisis-resources' | 'safety-settings' | 'blocked-users' | 'help-center';
 
