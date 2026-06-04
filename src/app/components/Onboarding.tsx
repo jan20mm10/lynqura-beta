@@ -1,6 +1,6 @@
 import { useState } from 'react';
+import logoImage from "../../imports/ChatGPT_Image_Apr_22,_2026,_12_46_44_AM.png";
 import { ChevronRight, ChevronLeft, ChevronDown, ChevronUp } from 'lucide-react';
-import logoImage from "figma:asset/2adf89cd05eab827313c4a2ea4459c75b1ff962c.png";
 import { WarmthPass } from './WarmthOverlay';
 
 interface OnboardingProps {
