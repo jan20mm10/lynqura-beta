@@ -287,7 +287,7 @@ export function Home() {
      {['home', 'connect', 'journal', 'profile', 'hubs'].includes(currentScreen) && (
         <nav className="absolute bottom-0 left-0 right-0 bg-[#0A0B16] border-t border-[#B3915A]/20 px-6 pb-8 pt-4">
           <div className="flex items-center justify-around">
-            {[
+            
               {[
               { id: 'home', icon: HomeIcon, label: 'Home' },
               { id: 'connect', icon: Users, label: 'Connect' },
