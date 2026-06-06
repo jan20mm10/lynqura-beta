@@ -12,11 +12,11 @@ import { CrisisResources } from './CrisisResources';
 import { SafetySettings } from './SafetySettings';
 import { BlockedUsersList } from './BlockedUsersList';
 import { HelpCenter } from './HelpCenter';
+import { Hubs } from './Hubs';
 import { PanicExit, SafeScreen } from './PanicExit';
 import logoImage from "../../imports/ChatGPT_Image_Apr_22,_2026,_12_46_44_AM.png";
 
-type Screen = 'home' | 'connect' | 'chat' | 'journal' | 'profile' | 'crisis-resources' | 'safety-settings' | 'blocked-users' | 'help-center';
-
+type Screen = 'home' | 'connect' | 'chat' | 'journal' | 'profile' | 'crisis-resources' | 'safety-settings' | 'blocked-users' | 'help-center' | 'hubs';
 export function Home() {
   const [activeTab, setActiveTab] = useState<'home' | 'connect' | 'journal' | 'profile'>('home');
   const [currentScreen, setCurrentScreen] = useState<Screen>('home');
@@ -34,7 +34,7 @@ export function Home() {
   const chips = ['Vent', 'Need advice', 'Need distraction', 'Celebrate', "I'm overwhelmed"];
 
   // Handle tab changes
-  const handleTabChange = (tab: 'home' | 'connect' | 'journal' | 'profile') => {
+  const handleTabChange = (tab: 'home' | 'connect' | 'journal' | 'profile' | 'hubs') => {
     setActiveTab(tab);
     setCurrentScreen(tab);
   };
@@ -104,6 +104,12 @@ export function Home() {
         />;
       case 'help-center':
         return <HelpCenter
+          onBack={goBack}
+          onHome={goHome}
+        />;
+        case 'hubs':
+        return <Hubs
+          onHubClick={(hub) => setCurrentScreen('connect')}
           onBack={goBack}
           onHome={goHome}
         />;
@@ -278,12 +284,14 @@ export function Home() {
       {renderScreen()}
 
       {/* Bottom Navigation - only show on main screens */}
-      {['home', 'connect', 'journal', 'profile'].includes(currentScreen) && (
+     {['home', 'connect', 'journal', 'profile', 'hubs'].includes(currentScreen) && (
         <nav className="absolute bottom-0 left-0 right-0 bg-[#0A0B16] border-t border-[#B3915A]/20 px-6 pb-8 pt-4">
           <div className="flex items-center justify-around">
             {[
+              {[
               { id: 'home', icon: HomeIcon, label: 'Home' },
               { id: 'connect', icon: Users, label: 'Connect' },
+              { id: 'hubs', icon: Heart, label: 'Hubs' },
               { id: 'journal', icon: BookOpen, label: 'Journal' },
               { id: 'profile', icon: User, label: 'Profile' },
             ].map((tab) => {
