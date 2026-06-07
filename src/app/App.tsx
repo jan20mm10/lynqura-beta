@@ -1,4 +1,13 @@
-import { useState } from 'react';
+import { PrototypeBanner } from './app/components/PrototypeBanner';
+
+function App() {
+  return (
+    <>
+      <PrototypeBanner />
+      {/* the rest of your app below */}
+    </>
+  );
+}import { useState } from 'react';
 import { Splash } from './components/Splash';
 import { Onboarding } from './components/Onboarding';
 import { Home } from './components/Home';
