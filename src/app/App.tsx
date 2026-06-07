@@ -1,21 +1,16 @@
 import { useState, useEffect } from 'react';
 import { PrototypeBanner } from './components/PrototypeBanner';
 import { Splash } from './components/Splash';
-import { SignIn } from './components/SignIn';            // ← must match your real file name
-import { Disclosures } from './components/Disclosures';  // ← must match your real file name
-import { Onboarding } from './components/Onboarding';    // your check-in
-import { Welcome } from './components/Welcome';
+import { Onboarding } from './components/Onboarding';
 import { Home } from './components/Home';
 import { MobileFrame } from './components/MobileFrame';
 
-type Screen = 'splash' | 'signin' | 'disclosures' | 'checkin' | 'welcome' | 'home';
-
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('splash');
+  const [screen, setScreen] = useState<'splash' | 'onboarding' | 'home'>('splash');
 
   useEffect(() => {
     if (screen === 'splash') {
-      const timer = setTimeout(() => setScreen('signin'), 2000);
+      const timer = setTimeout(() => setScreen('onboarding'), 2000);
       return () => clearTimeout(timer);
     }
   }, [screen]);
@@ -26,10 +21,7 @@ export default function App() {
       <div className="flex-1 flex items-center justify-center p-4">
         <MobileFrame>
           {screen === 'splash' && <Splash />}
-          {screen === 'signin' && <SignIn onComplete={() => setScreen('disclosures')} />}
-          {screen === 'disclosures' && <Disclosures onComplete={() => setScreen('checkin')} />}
-          {screen === 'checkin' && <Onboarding onComplete={() => setScreen('welcome')} />}
-          {screen === 'welcome' && <Welcome onComplete={() => setScreen('home')} />}
+          {screen === 'onboarding' && <Onboarding onComplete={() => setScreen('home')} />}
           {screen === 'home' && <Home />}
         </MobileFrame>
       </div>
