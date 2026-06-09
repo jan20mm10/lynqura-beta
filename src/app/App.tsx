@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Splash } from './components/Splash';
+import { SignIn } from './components/SignIn';
 import { Onboarding } from './components/Onboarding';
 import { SelfCheckInOnboarding } from './components/SelfCheckInOnboarding';
 import { Disclosures } from './components/Disclosures';
@@ -8,12 +9,12 @@ import { MobileFrame } from './components/MobileFrame';
 import { PrototypeDisclaimer } from './components/PrototypeDisclaimer';
 
 export default function App() {
-  const [screen, setScreen] = useState<'splash' | 'onboarding' | 'self-check-in' | 'disclosures' | 'home'>('splash');
+  const [screen, setScreen] = useState<'splash' | 'signin' | 'onboarding' | 'self-check-in' | 'disclosures' | 'home'>('splash');
   const [showDisclaimer, setShowDisclaimer] = useState(true);
 
   useState(() => {
     if (screen === 'splash') {
-      const timer = setTimeout(() => setScreen('onboarding'), 2000);
+      const timer = setTimeout(() => setScreen('signin'), 2000);
       return () => clearTimeout(timer);
     }
   });
@@ -25,6 +26,7 @@ export default function App() {
       )}
       <MobileFrame>
         {screen === 'splash' && <Splash />}
+        {screen === 'signin' && <SignIn onComplete={() => setScreen('onboarding')} />}
         {screen === 'onboarding' && <Onboarding onComplete={() => setScreen('self-check-in')} />}
         {screen === 'self-check-in' && <SelfCheckInOnboarding onComplete={() => setScreen('disclosures')} />}
         {screen === 'disclosures' && <Disclosures onComplete={() => setScreen('home')} />}
