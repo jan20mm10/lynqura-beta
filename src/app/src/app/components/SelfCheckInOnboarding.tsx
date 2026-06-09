@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
-import logoImage from '../../imports/ChatGPT_Image_Apr_22,_2026,_12_46_44_AM.png';
 
 interface SelfCheckInOnboardingProps {
   onComplete: () => void;
@@ -105,7 +104,7 @@ export function SelfCheckInOnboarding({ onComplete }: SelfCheckInOnboardingProps
           ) : (
             <div className="w-10" />
           )}
-          <img src={logoImage} alt="LYNQURA" className="h-8" />
+          <span className="text-lg font-bold tracking-wide" style={{ color: '#B3915A' }}>LYNQURA</span>
           <div className="w-10" />
         </div>
 
@@ -122,13 +121,12 @@ export function SelfCheckInOnboarding({ onComplete }: SelfCheckInOnboardingProps
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-4 space-y-6">
+      <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6">
         <div className="space-y-2">
           <h2 className="text-2xl font-bold text-[#F5F2EA]">{step.question}</h2>
           <p className="text-sm text-[#B8C0CC]">{step.subtext}</p>
         </div>
 
-        {/* Intro */}
         {step.type === 'intro' && (
           <div className="bg-gradient-to-br from-[#B3915A]/20 to-[#C8A569]/10 border border-[#B3915A]/30 rounded-2xl p-6 space-y-4">
             <div className="text-4xl text-center">💛</div>
@@ -139,7 +137,6 @@ export function SelfCheckInOnboarding({ onComplete }: SelfCheckInOnboardingProps
           </div>
         )}
 
-        {/* Slider */}
         {step.type === 'slider' && (
           <div className="bg-[#0A0B16] border border-[#B3915A]/20 rounded-2xl p-6 space-y-6">
             <div className="text-center">
@@ -163,7 +160,6 @@ export function SelfCheckInOnboarding({ onComplete }: SelfCheckInOnboardingProps
           </div>
         )}
 
-        {/* Chips */}
         {step.type === 'chips' && step.options && (
           <div className="flex flex-wrap gap-2">
             {step.options.map((option) => {
