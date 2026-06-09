@@ -1,36 +1,35 @@
-import { useState, useEffect } from 'react';
-import { PrototypeBanner } from './components/PrototypeBanner';
+import { useState } from 'react';
 import { Splash } from './components/Splash';
-import { SignIn } from './components/SignIn';
-import { Disclosures } from './components/Disclosures';
 import { Onboarding } from './components/Onboarding';
+import { SelfCheckInOnboarding } from './components/SelfCheckInOnboarding';
+import { Disclosures } from './components/Disclosures';
 import { Home } from './components/Home';
 import { MobileFrame } from './components/MobileFrame';
-
-type Screen = 'splash' | 'signin' | 'disclosures' | 'checkin' | 'home';
+import { PrototypeDisclaimer } from './components/PrototypeDisclaimer';
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('splash');
+  const [screen, setScreen] = useState<'splash' | 'onboarding' | 'self-check-in' | 'disclosures' | 'home'>('splash');
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
 
-  useEffect(() => {
+  useState(() => {
     if (screen === 'splash') {
-      const timer = setTimeout(() => setScreen('signin'), 2000);
+      const timer = setTimeout(() => setScreen('onboarding'), 2000);
       return () => clearTimeout(timer);
     }
-  }, [screen]);
+  });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex flex-col">
-      <PrototypeBanner />
-      <div className="flex-1 flex items-center justify-center p-4">
-        <MobileFrame>
-          {screen === 'splash' && <Splash />}
-          {screen === 'signin' && <SignIn onComplete={() => setScreen('disclosures')} />}
-          {screen === 'disclosures' && <Disclosures onComplete={() => setScreen('checkin')} />}
-          {screen === 'checkin' && <Onboarding onComplete={() => setScreen('home')} />}
-          {screen === 'home' && <Home />}
-        </MobileFrame>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center p-4">
+      {showDisclaimer && (
+        <PrototypeDisclaimer onDismiss={() => setShowDisclaimer(false)} />
+      )}
+      <MobileFrame>
+        {screen === 'splash' && <Splash />}
+        {screen === 'onboarding' && <Onboarding onComplete={() => setScreen('self-check-in')} />}
+        {screen === 'self-check-in' && <SelfCheckInOnboarding onComplete={() => setScreen('disclosures')} />}
+        {screen === 'disclosures' && <Disclosures onComplete={() => setScreen('home')} />}
+        {screen === 'home' && <Home />}
+      </MobileFrame>
     </div>
   );
 }
