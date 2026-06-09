@@ -1,61 +1,206 @@
 import { useState } from 'react';
-import { ArrowRight, Heart } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import logoImage from '../../imports/ChatGPT_Image_Apr_22,_2026,_12_46_44_AM.png';
 
-const MOODS = [
-  { label: 'Good', value: 'good' },
-  { label: 'Okay', value: 'okay' },
-  { label: 'A little down', value: 'low' },
-  { label: 'Really struggling', value: 'struggling' },
+interface SelfCheckInOnboardingProps {
+  onComplete: () => void;
+}
+
+const STEPS = [
+  {
+    id: 'intro',
+    question: 'Before we set up your Pulse, let\'s check in.',
+    subtext: 'This takes about 60 seconds and helps us personalise your experience.',
+    type: 'intro',
+  },
+  {
+    id: 'feeling',
+    question: 'How are you feeling right now?',
+    subtext: 'Be honest — there\'s no wrong answer here.',
+    type: 'slider',
+  },
+  {
+    id: 'brought-here',
+    question: 'What brought you to LYNQURA today?',
+    subtext: 'Pick everything that feels true.',
+    type: 'chips',
+    options: [
+      'I need to vent',
+      'I want to support others',
+      'I\'m going through something hard',
+      'I\'m curious',
+      'I want real connection',
+      'I feel lonely',
+    ],
+  },
+  {
+    id: 'topics',
+    question: 'What topics feel most relevant to you?',
+    subtext: 'We\'ll use this to match you with the right people.',
+    type: 'chips',
+    options: [
+      'Anxiety',
+      'Depression',
+      'Grief',
+      'Relationships',
+      'Work stress',
+      'Identity',
+      'Loneliness',
+      'Burnout',
+      'Trauma',
+      'General wellness',
+    ],
+  },
 ];
 
-export function SelfCheckInOnboarding({ onComplete }: { onComplete: () => void }) {
-  const [mood, setMood] = useState<string | null>(null);
+const EMOJIS: Record<number, string> = {
+  1: '😔', 2: '😔', 3: '😟', 4: '😕', 5: '😐',
+  6: '🙂', 7: '🙂', 8: '😊', 9: '😊', 10: '😄',
+};
+
+export function SelfCheckInOnboarding({ onComplete }: SelfCheckInOnboardingProps) {
+  const [stepIndex, setStepIndex] = useState(0);
+  const [sliderValue, setSliderValue] = useState(5);
+  const [selectedChips, setSelectedChips] = useState<Record<string, string[]>>({});
+
+  const step = STEPS[stepIndex];
+  const isFirst = stepIndex === 0;
+  const isLast = stepIndex === STEPS.length - 1;
+  const progress = ((stepIndex + 1) / STEPS.length) * 100;
+
+  const toggleChip = (stepId: string, option: string) => {
+    setSelectedChips((prev) => {
+      const current = prev[stepId] || [];
+      return {
+        ...prev,
+        [stepId]: current.includes(option)
+          ? current.filter((c) => c !== option)
+          : [...current, option],
+      };
+    });
+  };
+
+  const canAdvance = () => {
+    if (step.type === 'intro' || step.type === 'slider') return true;
+    return (selectedChips[step.id] || []).length > 0;
+  };
+
+  const handleNext = () => {
+    if (isLast) {
+      onComplete();
+    } else {
+      setStepIndex((i) => i + 1);
+    }
+  };
 
   return (
-    <div className="flex flex-col h-full w-full bg-[#0C192C] text-[#F5F2EA] px-6 py-8">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-11 h-11 rounded-full bg-[#B3915A]/15 border border-[#B3915A]/40 flex items-center justify-center shrink-0">
-          <Heart size={22} className="text-[#B3915A]" />
-        </div>
-        <h1 className="text-xl font-semibold">A quick check-in</h1>
-      </div>
-      <p className="text-sm text-[#F5F2EA]/70 mb-6">How are you feeling right now? Only if you'd like to share.</p>
-
-      <div className="flex flex-col gap-3 flex-1">
-        {MOODS.map((m) => {
-          const selected = mood === m.value;
-          return (
-            <button
-              key={m.value}
-              onClick={() => setMood(m.value)}
-              className={`text-left rounded-xl border px-4 py-3 text-sm transition-all ${
-                selected
-                  ? 'border-[#B3915A] bg-[#B3915A]/15'
-                  : 'border-[#F5F2EA]/15 bg-[#0A0B16]/40 hover:border-[#F5F2EA]/35'
-              }`}
-            >
-              {m.label}
+    <div className="h-full bg-[#0C192C] text-[#F5F2EA] flex flex-col">
+      {/* Header */}
+      <div className="px-6 pt-12 pb-4">
+        <div className="flex items-center justify-between mb-6">
+          {!isFirst ? (
+            <button onClick={() => setStepIndex((i) => i - 1)} className="p-2 -ml-2">
+              <ArrowLeft className="w-6 h-6" style={{ color: '#B3915A' }} />
             </button>
-          );
-        })}
+          ) : (
+            <div className="w-10" />
+          )}
+          <img src={logoImage} alt="LYNQURA" className="h-8" />
+          <div className="w-10" />
+        </div>
 
-        {mood === 'struggling' && (
-          <div className="mt-2 rounded-xl border border-[#B3915A]/50 bg-[#0A0B16] p-4 text-sm leading-relaxed">
-            It sounds like things are heavy right now. Peers here are ready to listen — and if you need immediate help, you can call or text <a href="tel:988" className="font-semibold underline underline-offset-2">988</a> anytime. You're not alone anymore.
+        {/* Progress bar */}
+        <div className="w-full h-1 bg-[#0A0B16] rounded-full overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${progress}%`, backgroundColor: '#B3915A' }}
+          />
+        </div>
+        <p className="text-xs text-[#B8C0CC] mt-2 text-right">
+          {stepIndex + 1} of {STEPS.length}
+        </p>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto scrollbar-hide px-6 py-4 space-y-6">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold text-[#F5F2EA]">{step.question}</h2>
+          <p className="text-sm text-[#B8C0CC]">{step.subtext}</p>
+        </div>
+
+        {/* Intro */}
+        {step.type === 'intro' && (
+          <div className="bg-gradient-to-br from-[#B3915A]/20 to-[#C8A569]/10 border border-[#B3915A]/30 rounded-2xl p-6 space-y-4">
+            <div className="text-4xl text-center">💛</div>
+            <p className="text-sm text-[#B8C0CC] text-center leading-relaxed">
+              You're in a safe space. Everything you share here is private and never sold.
+              LYNQURA exists because healing is human.
+            </p>
+          </div>
+        )}
+
+        {/* Slider */}
+        {step.type === 'slider' && (
+          <div className="bg-[#0A0B16] border border-[#B3915A]/20 rounded-2xl p-6 space-y-6">
+            <div className="text-center">
+              <span className="text-6xl">{EMOJIS[sliderValue]}</span>
+              <p className="text-3xl font-bold mt-3" style={{ color: '#B3915A' }}>
+                {sliderValue} / 10
+              </p>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={10}
+              value={sliderValue}
+              onChange={(e) => setSliderValue(Number(e.target.value))}
+              className="w-full accent-[#B3915A]"
+            />
+            <div className="flex justify-between text-xs text-[#B8C0CC]">
+              <span>Not great</span>
+              <span>Amazing</span>
+            </div>
+          </div>
+        )}
+
+        {/* Chips */}
+        {step.type === 'chips' && step.options && (
+          <div className="flex flex-wrap gap-2">
+            {step.options.map((option) => {
+              const isSelected = (selectedChips[step.id] || []).includes(option);
+              return (
+                <button
+                  key={option}
+                  onClick={() => toggleChip(step.id, option)}
+                  className="px-4 py-2 rounded-full text-sm border transition-all"
+                  style={{
+                    backgroundColor: isSelected ? 'rgba(179,145,90,0.2)' : '#0A0B16',
+                    borderColor: isSelected ? '#B3915A' : 'rgba(179,145,90,0.2)',
+                    color: isSelected ? '#B3915A' : '#F5F2EA',
+                  }}
+                >
+                  {option}
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
 
-      <div className="pt-6 flex flex-col gap-3">
+      {/* Button */}
+      <div className="px-6 pb-10 pt-4 border-t border-[#B3915A]/10">
         <button
-          onClick={onComplete}
-          className="flex items-center justify-center gap-2 rounded-xl bg-[#B3915A] px-4 py-3 font-semibold text-[#0A0B16] hover:opacity-90 transition-opacity"
+          onClick={handleNext}
+          disabled={!canAdvance()}
+          className="w-full py-4 rounded-2xl font-semibold transition-all"
+          style={{
+            backgroundColor: canAdvance() ? '#B3915A' : '#0A0B16',
+            color: canAdvance() ? '#0C192C' : '#B8C0CC',
+            opacity: canAdvance() ? 1 : 0.5,
+            cursor: canAdvance() ? 'pointer' : 'not-allowed',
+          }}
         >
-          Continue
-          <ArrowRight size={18} />
-        </button>
-        <button onClick={onComplete} className="text-sm text-[#F5F2EA]/60 hover:text-[#F5F2EA]">
-          Skip for now
+          {isLast ? 'Take me in' : 'Continue'}
         </button>
       </div>
     </div>
